@@ -48,6 +48,7 @@ void delay(int t) {
    }
 }   
       //LATBbits.LATB13 = 1;      //D8 BUT DOESN'T WORK //TODO: chiedi a Mauro
+void CheckButton();
 void ResetPins();
 void LightUpLeds();
 void KitCarEffect();
@@ -80,47 +81,50 @@ int main(void) {
     
     while (1) {
         /*wait button state*/
-        if (!pressedButton)
-        {
-        delay(50);
-        newButtonState = !PORTDbits.RD4;
-        if (oldButtonState > newButtonState)
-        {
-            gameNumber++;
-            ResetPins();
-            /*choose game*/
-            switch(gameNumber)
-            {
-                case 1:
-                    kit = 1;
-                    break;
-                case 2:
-                    kit = 0;
-                    collision = 1;
-                    break;
-                default:
-                    ResetPins();
-                    collision = 0;
-                    gameNumber = 0;
-                    delay(1000);
-                    break;
-            }
-            /***/
-        }
-        oldButtonState = !PORTDbits.RD4;
-        }
-        /***/
-        
+        CheckButton(); //IT'S NOT PRECISE, MULTIPLE BUTTON PRESSURES NEEDED
         if (kit)
         {
             KitCarEffect();
+            CheckButton();
         }
         
         if (collision)
         {
             Collision();
+            CheckButton();
         }
     }
+}
+
+void CheckButton()
+{
+    //delay(50);
+    newButtonState = !PORTDbits.RD4;
+    if (oldButtonState > newButtonState)
+    {
+        gameNumber++;
+        ResetPins();
+        /*choose game*/
+        switch(gameNumber)
+        {
+            case 1:
+                kit = 1;
+                break;
+            case 2:
+                kit = 0;
+                collision = 1;
+                break;
+            default:
+                ResetPins();
+                collision = 0;
+                gameNumber = 0;
+                delay(1000);
+                break;
+        }
+        /***/
+    }
+    oldButtonState = !PORTDbits.RD4;
+    /***/
 }
 
 void ResetPins()
