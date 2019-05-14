@@ -1,8 +1,8 @@
-/* DOESN'T WORK
+/* 
  * File:   main.c
  * Author: delli
  * Proj-name: external_button_test_01
- * Created on May 1, 2019, 11:27 AM
+ * Created on April 25, 2019, 11:34 AM
  */
 
 // DEVCFG2
@@ -30,61 +30,23 @@
 
 #include <p32xxxx.h>
 #include <plib.h> // Include the PIC32 Peripheral Library.
-
-#define LED1 LATDbits.LATD5
-#define LED2 LATDbits.LATD6
-#define LED3 LATDbits.LATD7
-#define LED4 LATDbits.LATD8
-#define LED5 LATDbits.LATD11
-#define LED6 LATBbits.LATB14
-#define LED7 LATGbits.LATG9
-#define LED8 LATGbits.LATG8
-#define LED_YELLOW LATDbits.LATD1
-
+/*
+ * 
+ */
 void delay(int t) {
    int n = t * 1900; //1900 è un numero ricavato sperimentalmente
    while (n > 0) {
       n--;
    }
-}   
-
-void ResetPins ();
-
-int oldButtonState;
-int newButtonState;
-int unsigned status;
-
-int main(void) {
-
-    TRISD = 0x0000;
-    TRISB = 0x0000;
-    TRISG = (1<<7);
-    //ResetPins();
-    LED4 = 1;
-    
-    while (1)
-    {
-        LED4 =1;
-        delay(100);
-        status = LATGbits.LATG7;         // Read the pin
-        delay(100);
-
-        if (status)
-        {
-            ResetPins();
-            LED5 = 1;
-        }
-    }
 }
-
-void ResetPins ()
-{
-        LED1 = 0;      //D3
-        LED2 = 0;      //D4
-        LED3 = 0;      //D5
-        LED4 = 0;      //D6
-        LED5 = 0;     //D7
-        LED6 = 0;     //D9
-        LED7 = 0;      //D10
-        LED8 = 0;      //D11
+int main(void) {
+   //TRISD = (1<<4) | (1<<0);
+   TRISD = (1<<5) ;
+   int oldButtonState = 0;
+   
+   while (1) {
+       delay(100);
+       LATDbits.LATD6 = !PORTDbits.RD5; // pullup
+   }
+   return 1;
 }

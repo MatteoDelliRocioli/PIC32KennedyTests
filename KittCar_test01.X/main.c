@@ -218,6 +218,6 @@ void ScrollLedsBackwards ()
        LATDbits.LATD7 = 1;      //D5
        LATDbits.LATD8 = 1;      //D6
        LATDbits.LATD11 = 1;     //D7
-       LATBbits.LATB14 = 1;      //D9
+       LATBbits.LATB14 = 1;     //D9
        LATGbits.LATG9 = 1;      //D10
        LATGbits.LATG8 = 1;      //D11*/
