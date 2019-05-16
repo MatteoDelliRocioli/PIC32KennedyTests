@@ -1,8 +1,8 @@
 /* 
  * File:   main.c
  * Author: delli
- * Proj-name: KittCar_w_array
- * Created on April 27, 2019, 4:23 PM
+ * Proj-name: ButtonLedGame_w_array
+ * Created on May 16, 2019, 4:43 PM
  */
 
 // DEVCFG2
@@ -30,6 +30,7 @@
 
 #include <p32xxxx.h>
 #include <plib.h> // Include the PIC32 Peripheral Library.
+#include "pinlib.h"
 
 #define LED1 LATDbits.LATD5
 #define LED2 LATDbits.LATD6
@@ -49,12 +50,15 @@ void delay(int t) {
 }   
       //LATBbits.LATB13 = 1;      //D8 BUT DOESN'T WORK //TODO: chiedi a Mauro
 void ResetPins ();
-void light_up_leds(char value);
+void Light_up_leds(char value);
+void KittCar();
+void Collision();
+void Random();
 
 int pressedButton = 0;
 int oldButtonState;
-int newButtonState;
-int i;
+int newButtonState, gameNumber;
+int i, add;
 
 int main(void) {
     /*configure machine*/
@@ -64,12 +68,14 @@ int main(void) {
     
     LED_YELLOW = 0;
     ResetPins (0);
+    gameNumber = 0;
+    add = 0;
     
     while (1) {
         /*wait button state*/
         if (!pressedButton)
         {
-        delay(100);
+        delay(50);
         newButtonState = !PORTDbits.RD4;
         if (oldButtonState > newButtonState)
         {
@@ -82,9 +88,12 @@ int main(void) {
         /*Control if game has started*/
         if (pressedButton)
         {
+            pressedButton = 0;
+            gameNumber ++;
+            //TODO: aumenta numero per switch gioco
             LED_YELLOW =~ LED_YELLOW;    //button pressed, led yellow 
                                                 //lights up
-            while(1)
+            /*while(1)
             {
                 for (i = 0; i < 8; i++)
                 {
@@ -98,7 +107,22 @@ int main(void) {
                     delay(50);
                     ResetPins();
                 }
-            }
+            }*/
+        }
+        switch (gameNumber)
+        {
+            case 1:
+                KittCar();
+                break;
+            case 2:
+                Collision();
+                break;
+            case 3:
+                Random();
+                break;
+            default:
+                gameNumber = 0;
+                break;
         }
     }
     return 1;
@@ -116,7 +140,7 @@ void ResetPins ()
         LED8 = 0;      //D11
 }
 
-void light_up_leds(char value)
+void Light_up_leds(char value)
 {
     static const int character[8] = {
         0x0020, 0x0040, 0x0080, 0x0100,
@@ -136,6 +160,49 @@ void light_up_leds(char value)
     else if (value > 5 && value < 8)
     {
         LATG = character [value];
+    }
+}
+
+void KittCar()
+{
+    for (i = 0; i < 8; i++)
+    {
+        Light_up_leds(i);
+        delay(50);
+        ResetPins();
+    }
+    for (i = 6; i > 0; i--)
+    {
+        Light_up_leds(i);
+        delay(50);
+        ResetPins();
+    }
+}
+
+void Collision()
+{
+    //Light_up_leds(1);
+    for (i = 0; i < 4; i++)
+    {
+        Light_up_leds(i);
+        Light_up_leds(7 - i);
+        delay(50);
+        ResetPins();
+    }
+}
+
+void Random()
+{
+    for (i = 0; i < 8; i++)
+    {
+        Light_up_leds(i);
+        delay(50);
+        ResetPins();
+        if (i == 8)
+        {
+            add++;
+        }
+        Light_up_leds(add);
     }
 }
 
