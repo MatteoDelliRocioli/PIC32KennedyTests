@@ -58,6 +58,7 @@ void initializeADC(){
 }
 
 void light_up_leds(int value);
+long map(long x, long in_min, long in_max, long out_min, long out_max);
 
 int main(){
 SYSTEMConfigPerformance(SYSCLK);
@@ -78,11 +79,15 @@ int i;
         // la locazione del buffer da leggere
 
         // il dato va presentato in uscita
-        int value = dato >> 7;
+//        int value1 = dato*3;
+        
+        //int value = value >> 7;
+        
+        int value1 = map(dato, 80, 95, 0, 7);
 
         //light_up_leds(value);
 
-        for ( i = 0; i <= value; i++)
+        for ( i = 0; i <= value1; i++)
         {
             light_up_leds(i);
         }
@@ -118,4 +123,9 @@ void light_up_leds(int value)
         LATD = 0;
         LATB = 0;
     }
+}
+
+long map(long x, long in_min, long in_max, long out_min, long out_max)
+{
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
